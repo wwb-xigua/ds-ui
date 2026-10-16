@@ -5,9 +5,21 @@
 #   next  — development
 #   feature/* — merged into next via MR
 #
-# Required CI/CD variables (Settings > CI/CD > Variables):
-#   NPM_TOKEN          — npm automation token with publish scope  (masked)
-#   Optionally NODE_ENV=production
+# ── Publishing ─────────────────────────────────────────────────────────────
+#
+# This file's publish job uses an NPM_TOKEN secret. The repository also has
+# `.github/workflows/npm-publish.yml`, which publishes through OIDC trusted
+# publishing with no token at all.
+#
+# Use ONE of them, not both. Preferred order:
+#
+#   1. GitHub Actions OIDC (npm-publish.yml) — no long-lived credential.
+#      npm is removing bypass-2FA token publishing in January 2027, so this is
+#      the path that keeps working.
+#   2. This file's NPM_TOKEN path — only while setting up (1).
+#
+# To switch: disable the `publish:npm` job below, or delete the file once the
+# GitHub Actions workflow is verified.
 
 image: node:20
 

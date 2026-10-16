@@ -1,0 +1,91 @@
+# Publish to npm via OIDC trusted publishing.
+#
+# No NPM_TOKEN secret, no .npmrc. npm exchanges the workflow's short-lived OIDC
+# identity for a publish credential scoped to this single run — nothing durable
+# to steal. This is npm's replacement for bypass-2FA tokens, which lose direct
+# publish access in January 2027.
+#
+# ── ONE-TIME SETUP (after the first version is already on npm) ─────────────
+#
+#   1. Push this workflow to GitHub.
+#   2. On npmjs.com, open the package → Settings → Trusted Publisher
+#   3. Fill in:
+#        Provider:  GitHub Actions
+#        Org/user:  wwb-xigua
+#        Repo:      ds-ui
+#        Workflow:  npm-publish.yml        ← must match exactly, case-sensitive
+#        Environment: (leave blank unless you set one below)
+#   4. Or run:
+#        npm trust github ds-ui --repo wwb-xigua/ds-ui \
+#              --file npm-publish.yml --allow-publish --yes
+#
+# After that, `git push origin v1.2.3` publishes. Rotate away the bootstrap
+# token once you confirm the first tokenless release landed.
+#
+# Requirements: npm >= 11.5.1 (OIDC support), Node >= 22.
+
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+# Least privilege. `id-token: write` is what npm exchanges for a credential.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    environment: npm
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # npm verifies the tag matches package.json, and provenance is
+          # generated from the commit — it needs real history, not a shallow clone.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          # Tells the publish step which registry to talk to. Without this,
+          # setup-node can leave npm pointed at the wrong registry.
+          registry-url: 'https://registry.npmjs.org'
+
+      # Node 22 ships npm 10; OIDC needs 11.5.1+.
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      - name: Verify tag matches package.json
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PKG" ]; then
+            echo "Tag $TAG does not match package.json version $PKG" >&2
+            exit 1
+          fi
+          echo "Publishing $PKG"
+
+      - name: Build and verify
+        run: |
+          npm ci
+          npm run build
+          npm run verify:build
+
+      # --access public is required for unscoped packages on first publish.
+      # --provenance attaches the signed build attestation and the npm badge.
+      - name: Publish
+        run: npm publish --provenance --access public
+
+      - name: Confirm the release is live
+        run: |
+          set -euo pipefail
+          PKG="$(node -p "require('./package.json').name")"
+          VER="$(node -p "require('./package.json').version")"
+          npm view "$PKG@$VER" version dist-tags.latest
