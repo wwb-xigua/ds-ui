@@ -1,0 +1,13 @@
+# Template for local publishing credentials.
+#
+# Copy to `.npmrc` and fill in. `.npmrc` is gitignored — never commit a real token.
+#
+# In CI, prefer setting the token as a masked CI/CD variable instead of a file.
+#
+# Get a token at https://www.npmjs.com/settings/<your-user>/access-tokens
+# with "Automation" / "Publish" scope. npm requires 2FA to be enabled on the
+# account before it will publish.
+
+registry=https://registry.npmjs.org/
+
+//registry.npmjs.org/:_authToken=REPLACE_WITH_YOUR_TOKEN

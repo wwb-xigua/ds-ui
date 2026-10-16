@@ -1,0 +1,99 @@
+# GitLab CI for ds-ui
+#
+# Branches:
+#   main  — releases + hotfixes
+#   next  — development
+#   feature/* — merged into next via MR
+#
+# Required CI/CD variables (Settings > CI/CD > Variables):
+#   NPM_TOKEN          — npm automation token with publish scope  (masked)
+#   Optionally NODE_ENV=production
+
+image: node:20
+
+stages:
+  - verify
+  - build
+  - publish
+
+variables:
+  GIT_DEPTH: "0"
+  # Publish to a dist-tag first, then promote. A broken release never becomes
+  # `latest` implicitly.
+  RELEASE_TAG: "next"
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+
+# ── verify ────────────────────────────────────────────────────────────────
+
+format:
+  stage: verify
+  script:
+    - npm ci --prefer-offline
+    - npm run format:check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "next"
+
+typecheck:
+  stage: verify
+  script:
+    - npm ci --prefer-offline
+    - npm run typecheck
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "next"
+
+# ── build ─────────────────────────────────────────────────────────────────
+
+build:
+  stage: build
+  script:
+    - npm ci --prefer-offline
+    - npm run build
+    # Fails if a declared entry point is missing, a dependency got re-inlined,
+    # or eval/new Function reappeared in the bundle.
+    - npm run verify:build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == "next"
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+
+# ── publish ───────────────────────────────────────────────────────────────
+
+# Runs only for version tags. Releases are cut with
+# `node scripts/release.mjs <bump> --tag next` and the tag pushed from a clean
+# working tree — never by hand-editing package.json.
+publish:npm:
+  stage: publish
+  needs: ["build"]
+  script:
+    - npm ci --prefer-offline --ignore-scripts
+    - |
+      # Strip the leading "v" from the tag
+      VERSION="${CI_COMMIT_TAG#v}"
+      PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+      if [ "$VERSION" != "$PACKAGE_VERSION" ]; then
+        echo "Tag $CI_COMMIT_TAG does not match package.json ($PACKAGE_VERSION)"
+        exit 1
+      fi
+    - |
+      cat > .npmrc <<EOF
+      registry=https://registry.npmjs.org/
+      //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+      EOF
+    - npm publish --tag "$RELEASE_TAG" --provenance
+    # Confirm the version is actually retrievable before we call it a success.
+    - node scripts/verify-published.mjs
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+  environment:
+    name: npm/$RELEASE_TAG

@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main, next]
+  pull_request:
+    branches: [main, next]
+
+jobs:
+  verify:
+    name: Format & typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  build:
+    name: Build & verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      # Guards against a missing entry point, a dependency being re-inlined,
+      # or eval/new Function reappearing in the bundle.
+      - name: Verify build output
+        run: npm run verify:build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  smoke:
+    name: Consumer smoke test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Pack
+        run: |
+          npm ci
+          npm pack
+
+      # Install the tarball the way a consumer would, then load it through both
+      # ESM and CommonJS. This is what caught the `main` field pointing at a file
+      # the build never emitted, and lodash-es making the whole CJS bundle
+      # unloadable.
+      - name: Install packed tarball
+        run: |
+          mkdir -p /tmp/consumer && cd /tmp/consumer
+          npm init -y > /dev/null
+          npm install "$GITHUB_WORKSPACE"/ds-ui-*.tgz vue naive-ui
+
+      - name: Load via ESM
+        working-directory: /tmp/consumer
+        run: |
+          cat > esm-test.mjs <<'EOF'
+          import * as DsUI from 'ds-ui';
+          const components = ['STable','SForm','SModal','SDrawer','SMessage','SCard','SContainer','SIcon'];
+          const missing = components.filter((n) => !DsUI[n]);
+          if (missing.length) throw new Error('missing components: ' + missing.join(', '));
+          console.log('ESM ok — all components exported');
+          EOF
+          node esm-test.mjs
+
+      - name: Load via CommonJS
+        working-directory: /tmp/consumer
+        run: |
+          cat > cjs-test.cjs <<'EOF'
+          const DsUI = require('ds-ui');
+          for (const name of ['STable', 'SForm', 'SMessage']) {
+            if (!DsUI[name]) throw new Error('missing component: ' + name);
+          }
+          if (typeof DsUI.useSTable !== 'function') throw new Error('missing hook: useSTable');
+          console.log('CJS ok — require() resolves');
+          EOF
+          node cjs-test.cjs
