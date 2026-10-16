@@ -129,11 +129,23 @@ console.log(`\n... bumped to ${nextVersion}`);
 
 console.log(`... publishing to ${registry} with dist-tag "${distTag}"`);
 
-const publishArgs = ['publish', '--tag', distTag, '--provenance'];
-// npm defaults to restricted access for a package's first publish, which fails
-// outright for unscoped names. Declare it explicitly every time so the command
-// behaves the same on the first release and every one after.
-publishArgs.push('--access', 'public');
+/**
+ * `--provenance` generates a signed build attestation. npm only supports it when
+ * publishing from a recognised CI provider (GitHub Actions, GitLab CI, CircleCI);
+ * from a local machine there is no provider and npm rejects the flag with
+ * `EUSAGE`. So it is added only when we are actually running in CI.
+ */
+const inCI = Boolean(process.env.GITHUB_ACTIONS || process.env.GITLAB_CI || process.env.CIRCLECI);
+
+const publishArgs = ['publish', '--tag', distTag];
+publishArgs.push('--access', 'public'); // required for unscoped names
+
+if (inCI) {
+  publishArgs.push('--provenance');
+  console.log('    CI detected — generating provenance attestation');
+} else {
+  console.log('    not running in CI — skipping --provenance (npm rejects it locally)');
+}
 
 if (isFirstPublish) {
   console.log(`    first publish — claiming the name "${pkgName()}"`);
