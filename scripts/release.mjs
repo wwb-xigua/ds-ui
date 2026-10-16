@@ -75,12 +75,30 @@ function pkgName() {
   return JSON.parse(readFileSync(pkgPath, 'utf8')).name;
 }
 
-if (await isPublished(currentVersion)) {
+/** Does the package exist on the registry at all? */
+const packageExists = () => {
+  try {
+    execFileSync('npm', ['view', pkgName(), 'name'], { cwd: root, stdio: 'pipe' });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isFirstPublish = !packageExists();
+
+if (isFirstPublish) {
+  // Nothing to be consistent with yet — this is the bootstrap release that
+  // claims the name. The "current version must exist" rule exists to stop a
+  // tag from claiming a release that never happened, which does not apply here.
+  console.log(`ok  "${pkgName()}" is not on the registry yet — this is the first publish`);
+} else if (await isPublished(currentVersion)) {
   console.log(`ok  current version ${currentVersion} is on the registry`);
 } else {
   console.error(
     `x  Current version ${currentVersion} is NOT published.\n` +
-      `   Publish or fix that before cutting a new one, otherwise the tag will lie.`,
+      `   The package exists on npm but this version does not.\n` +
+      `   Fix that before cutting a new one, otherwise the tag will lie.`,
   );
   process.exit(1);
 }
@@ -110,7 +128,18 @@ console.log(`\n... bumped to ${nextVersion}`);
 /* ---------- 6. publish under the requested dist-tag ---------- */
 
 console.log(`... publishing to ${registry} with dist-tag "${distTag}"`);
-run('npm', ['publish', '--tag', distTag, '--provenance']);
+
+const publishArgs = ['publish', '--tag', distTag, '--provenance'];
+// npm defaults to restricted access for a package's first publish, which fails
+// outright for unscoped names. Declare it explicitly every time so the command
+// behaves the same on the first release and every one after.
+publishArgs.push('--access', 'public');
+
+if (isFirstPublish) {
+  console.log(`    first publish — claiming the name "${pkgName()}"`);
+}
+
+run('npm', publishArgs);
 
 /* ---------- 7. VERIFY — the step that was missing before ---------- */
 
