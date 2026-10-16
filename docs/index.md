@@ -17,7 +17,7 @@ hero:
       link: /components/stable
     - theme: alt
       text: GitHub
-      link: https://github.com/your-org/ds-ui
+      link: https://github.com/wwb-xigua/ds-ui
 
 features:
   - title: 表格即开即用

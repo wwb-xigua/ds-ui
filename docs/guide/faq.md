@@ -72,6 +72,6 @@ useSTable({ api, columns });
 
 ## 怎么贡献
 
-见 [CONTRIBUTING](https://github.com/your-org/ds-ui/blob/main/CONTRIBUTING.md)。最有价值的是**实际使用中的反馈** —— 哪怕只是"这个筛选器不好用"。
+见 [CONTRIBUTING](https://github.com/wwb-xigua/ds-ui/blob/main/CONTRIBUTING.md)。最有价值的是**实际使用中的反馈** —— 哪怕只是"这个筛选器不好用"。
 
-遇到安全问题请不要公开 issue，见 [SECURITY.md](https://github.com/your-org/ds-ui/blob/main/SECURITY.md)。
+遇到安全问题请不要公开 issue，见 [SECURITY.md](https://github.com/wwb-xigua/ds-ui/blob/main/SECURITY.md)。

@@ -23,7 +23,7 @@ Please include:
 ## Setting up
 
 ```bash
-git clone https://github.com/<owner>/ds-ui.git
+git clone https://github.com/wwb-xigua/ds-ui.git
 cd ds-ui
 npm install
 ```

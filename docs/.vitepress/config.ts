@@ -110,7 +110,7 @@ export default defineConfig({
       provider: 'local',
     },
 
-    socialLinks: [{ icon: 'github', link: 'https://github.com/your-org/ds-ui' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/wwb-xigua/ds-ui' }],
 
     footer: {
       message: '基于 MIT 协议开源',

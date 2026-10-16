@@ -5,6 +5,14 @@
   "type": "module",
   "license": "MIT",
   "author": "Wwb15617964957",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wwb-xigua/ds-ui.git"
+  },
+  "homepage": "https://wwb-xigua/ds-ui#readme",
+  "bugs": {
+    "url": "https://github.com/wwb-xigua/ds-ui/issues"
+  },
   "keywords": [
     "vue",
     "vue3",
