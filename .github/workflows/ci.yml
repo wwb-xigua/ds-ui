@@ -67,16 +67,22 @@ jobs:
       # between them. This job gets a fresh checkout with no dist/, so the
       # artifact from the build job has to be pulled down explicitly. Without
       # it, `npm pack` produces a tarball with no dist/ and the import fails.
+      #
+      # Note on paths: upload-artifact stores the *contents* of `dist/` at the
+      # artifact root, so it has to be downloaded into a directory named `dist`
+      # to end up as dist/ds-ui.js again.
       - uses: actions/download-artifact@v4
         with:
           name: dist
-          path: .
+          path: dist
 
       - name: Pack
         run: |
           set -euo pipefail
           if [ ! -f dist/ds-ui.js ]; then
-            echo "dist/ds-ui.js is missing — the build artifact was not restored" >&2
+            echo "dist/ds-ui.js is missing — the build artifact was not restored." >&2
+            echo "Artifact root contains:" >&2
+            ls -la | sed 's/^/  /' >&2
             exit 1
           fi
           npm ci --prefer-offline
