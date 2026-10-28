@@ -13,6 +13,12 @@ Nothing yet.
 
 Initial open-source release.
 
+> **Package name**: published as `@coldboy/ds-ui` rather than `ds-ui`. npm's
+> name-similarity policy permanently rejects the unscoped `ds-ui` because a
+> different package named `ds_ui` already exists on the registry. A scope has
+> its own namespace and is unaffected. Install with
+> `npm i @coldboy/ds-ui`.
+
 ### Components
 
 - `STable` — data table with column filtering (text, number, single/multi choice, tree, date
