@@ -343,7 +343,11 @@
 
   const tableRef = ref();
   const tableProps = reactive({
-    data: [],
+    // Seed from the `data` prop so that `<s-table :data="rows" />` works
+    // without an `api`. `tableProps` is merged *after* the declared props in
+    // `getBindValue`, so an empty initialiser here would shadow whatever the
+    // caller passed and render an empty table.
+    data: (unref(props as any).data as any[]) || [],
     scrollX: computeScrollX,
     'on-update:sorter': handleSorterChange,
   });
@@ -416,6 +420,19 @@
     () => {
       getBindValue.value?.autoLoad && loadData();
     },
+  );
+
+  // Keep `tableProps.data` in sync when the caller drives the table through the
+  // `data` prop instead of an `api`. In remote mode `loadData` owns this field;
+  // here the prop is the source of truth.
+  watch(
+    () => [unref(getProps).data, unref(getProps).api] as const,
+    ([nextData, api]) => {
+      if (!api && nextData) {
+        tableProps.data = nextData as any[];
+      }
+    },
+    { immediate: true },
   );
 
   /**
