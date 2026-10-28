@@ -78,6 +78,7 @@
 </template>
 
 <script lang="ts" setup name="Card">
+  import { NSpin } from 'naive-ui';
   import { computed, toRef, ref, useSlots, nextTick } from 'vue';
   import emptyIcon from './icons/empty.svg?url';
   import arrow from './icons/arrow.svg?url';

@@ -123,6 +123,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { NButton, NPopover } from 'naive-ui';
   import { VueDraggableNext } from 'vue-draggable-next';
   import { computed, ref, watch } from 'vue';
   import { useCloned } from '@vueuse/core';

@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="ts" name="Container">
+  import { NScrollbar } from 'naive-ui';
   // 此标签内不能为空
 </script>
 

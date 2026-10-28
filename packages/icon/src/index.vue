@@ -1,4 +1,5 @@
 <script setup lang="ts" name="Icon">
+  import { NIcon } from 'naive-ui';
   import { shallowRef, watchEffect } from 'vue';
 
   const props = defineProps<{

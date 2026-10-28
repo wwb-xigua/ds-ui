@@ -174,6 +174,7 @@
 </template>
 
 <script setup lang="ts" name="Form">
+  import { NForm, NFormItem, NGi, NGrid, NTooltip } from 'naive-ui';
   import { reactive, ref, useAttrs, computed, unref, onMounted, watch } from 'vue';
   import { useFormEvents } from './hooks/useFormEvents';
   import { useFormValues } from './hooks/useFormValues';

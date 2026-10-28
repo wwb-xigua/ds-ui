@@ -61,6 +61,7 @@
 </template>
 
 <script lang="ts" setup name="Modal">
+  import { NButton, NEllipsis, NModal, NSpace } from 'naive-ui';
   import { getCurrentInstance, ref, unref, computed, useAttrs, nextTick } from 'vue';
   import { basicProps } from './props';
   import { deepMerge } from './utils';

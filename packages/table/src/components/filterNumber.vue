@@ -49,6 +49,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { NButton, NInput } from 'naive-ui';
   import { onMounted, ref } from 'vue';
   import { useMessage } from '../../../message';
   import type { InputInst } from 'naive-ui';

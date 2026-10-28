@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## 0.1.1
+
+### Added
+
+- **`SPdfViewer`** — a PDF reader with page navigation, zoom, rotation, and fit-to-width.
+  Available from the `ds-ui/viewer` subpath so that apps which never render a
+  PDF do not pay for the PDF engine:
+
+  ```ts
+  import { SPdfViewer } from '@coldboy/ds-ui/viewer';
+  ```
+
+  The main entry stays at ~230 KB; the viewer entry carries pdfjs-dist and is
+  only loaded on demand.
+
+### Fixed
+
+- **Naive UI components are now imported directly by every ds-ui component.**
+  ds-ui's templates render Naive UI internals (`<n-data-table>` in `STable`,
+  `<n-icon>` in `SIcon`, and 25 more). Previously the consuming application had
+  to register all 27 of them globally, and a missing registration did not throw
+  — the element simply rendered as an unknown tag and disappeared. Consumers no
+  longer need to do that.
+
+- **`<s-table :data="..." />` rendered an empty table.** `tableProps` is merged
+  *after* the declared props, so its empty `data: []` initialiser shadowed the
+  value passed in. The table now seeds `data` from the prop and keeps it in sync
+  when no `api` is supplied.
+
+### Changed
+
+- The package now exposes a second entry point, `ds-ui/viewer`. The main
+  entry's file names and the `main` / `module` / `exports` fields are unchanged,
+  so this is not a breaking change for existing consumers.
+
 ## 0.1.0
 
 Initial open-source release.

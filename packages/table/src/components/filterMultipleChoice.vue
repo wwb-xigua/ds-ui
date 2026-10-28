@@ -88,6 +88,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { NCheckbox, NCheckboxGroup, NInput, NVirtualList } from 'naive-ui';
   import { ref, computed, nextTick, onMounted } from 'vue';
   import type { InputInst } from 'naive-ui';
 

@@ -57,6 +57,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { NInput, NRadio, NRadioGroup, NVirtualList } from 'naive-ui';
   import { ref, computed, onMounted } from 'vue';
   import type { InputInst } from 'naive-ui';
 

@@ -96,6 +96,7 @@
 </template>
 
 <script setup lang="ts" name="Table">
+  import { NButton, NTooltip } from 'naive-ui';
   import empty from './components/empty.vue';
   import {
     computed,

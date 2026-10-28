@@ -54,6 +54,7 @@
 </template>
 
 <script lang="ts" setup name="Drawer">
+  import { NDrawer, NDrawerContent } from 'naive-ui';
   import { getCurrentInstance, ref, unref, computed, useAttrs } from 'vue';
   import { drawerSProps } from './props';
   import { deepMerge } from './utils';

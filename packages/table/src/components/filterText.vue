@@ -48,6 +48,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { NButton, NInput } from 'naive-ui';
   import { onMounted, ref } from 'vue';
   import type { InputInst } from 'naive-ui';
 

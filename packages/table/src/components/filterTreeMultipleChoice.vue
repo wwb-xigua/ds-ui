@@ -65,6 +65,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { NInput, NTree } from 'naive-ui';
   import { computed, onMounted, ref } from 'vue';
   import type { InputInst } from 'naive-ui';
 

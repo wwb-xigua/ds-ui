@@ -47,13 +47,26 @@ export default defineConfig({
       },
     },
     lib: {
-      entry: resolve(__dirname, 'packages/index.ts'),
+      // Two entry points.
+      //
+      // `ds-ui` carries the general-purpose components and must stay small.
+      // `ds-ui/viewer` carries the PDF reader, which pulls in pdfjs-dist
+      // (~370 KB) — far too heavy to burden every consumer of the library.
+      // Splitting by entry means an app that never renders a PDF never pays
+      // for the PDF engine.
+      entry: {
+        index: resolve(__dirname, 'packages/index.ts'),
+        viewer: resolve(__dirname, 'packages/viewer/index.ts'),
+      },
       formats: ['es', 'cjs'],
       name: 'DsUI',
       // Pinned so the published file names stay stable regardless of the
       // package name. Without this, switching to a scoped package would
       // rename the entry files and break the `main` / `module` fields.
-      fileName: (format) => (format === 'es' ? 'ds-ui.js' : 'ds-ui.cjs'),
+      fileName: (format, entryName) => {
+        const ext = format === 'es' ? 'js' : 'cjs';
+        return entryName === 'index' ? `ds-ui.${ext}` : `ds-ui-${entryName}.${ext}`;
+      },
     },
   },
   resolve: {
