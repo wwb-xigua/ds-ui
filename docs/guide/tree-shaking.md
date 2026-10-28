@@ -6,7 +6,7 @@
 
 ```vue
 <script setup>
-  import { STable, SForm } from 'ds-ui';
+  import { STable, SForm } from '@coldboy/ds-ui';
 </script>
 
 <template>
@@ -23,8 +23,8 @@
 
 ```ts
 import { createApp } from 'vue';
-import * as DsUI from 'ds-ui';
-import { create } from 'ds-ui';
+import * as DsUI from '@coldboy/ds-ui';
+import { create } from '@coldboy/ds-ui';
 
 const app = createApp(App);
 
@@ -42,7 +42,7 @@ app.mount('#app');
 ## 默认预设
 
 ```ts
-import DsUI, { defaultComponents } from 'ds-ui';
+import DsUI, { defaultComponents } from '@coldboy/ds-ui';
 
 app.use(DsUI); // 注册全部 8 个组件
 console.log(defaultComponents); // ['STable', 'SForm', ...]
@@ -53,7 +53,7 @@ console.log(defaultComponents); // ['STable', 'SForm', ...]
 想扩展默认预设，把默认列表当成起点：
 
 ```ts
-import { create, defaultComponents, STable } from 'ds-ui';
+import { create, defaultComponents, STable } from '@coldboy/ds-ui';
 
 app.use(
   create({

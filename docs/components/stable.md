@@ -7,7 +7,7 @@
 ## 基础用法
 
 <script setup>
-import { useSTable } from 'ds-ui';
+import { useSTable } from '@coldboy/ds-ui';
 
 const names = ['张伟', '李娜', '王芳', '刘洋', '陈静', '杨帆', '赵磊', '周敏'];
 const depts = ['研发中心', '产品部', '运营部', '市场部'];
@@ -84,7 +84,7 @@ const [register, methods] = useSTable({
 
 ```vue
 <script setup>
-  import { useSTable } from 'ds-ui';
+  import { useSTable } from '@coldboy/ds-ui';
 
   const [register, methods] = useSTable({
     api: async (params) => {

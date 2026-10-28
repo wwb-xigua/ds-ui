@@ -32,7 +32,7 @@
 ## Installation
 
 ```bash
-npm install ds-ui naive-ui vue
+npm install @coldboy/ds-ui naive-ui vue
 ```
 
 ## Quick Start
@@ -41,7 +41,7 @@ npm install ds-ui naive-ui vue
 
 ```vue
 <script setup lang="ts">
-import { STable } from 'ds-ui';
+import { STable } from '@coldboy/ds-ui';
 </script>
 
 <template>
@@ -53,8 +53,8 @@ import { STable } from 'ds-ui';
 
 ```ts
 import { createApp } from 'vue';
-import * as DsUI from 'ds-ui';
-import { create } from 'ds-ui';
+import * as DsUI from '@coldboy/ds-ui';
+import { create } from '@coldboy/ds-ui';
 
 const app = createApp(App);
 
@@ -93,7 +93,7 @@ import 'ds-ui/style.css';
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useSTable } from 'ds-ui';
+import { useSTable } from '@coldboy/ds-ui';
 
 const [register, methods] = useSTable({
   api: async (params) => {
@@ -155,7 +155,7 @@ Returned by `useSTable()` or `defineExpose` on `STable`:
 
 ```vue
 <script setup lang="ts">
-import { useForm } from 'ds-ui';
+import { useForm } from '@coldboy/ds-ui';
 
 const [register, methods] = useForm({
   schemas: [

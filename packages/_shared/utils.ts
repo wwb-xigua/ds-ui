@@ -5,7 +5,7 @@
  * used previously. `lodash-es` is a pure-ESM package (`"type": "module"` with no
  * CommonJS build), so `require('lodash-es')` throws `ERR_REQUIRE_ESM`. Because
  * the library ships a CommonJS build, that made the *entire* CJS bundle
- * unloadable — `require('ds-ui')` failed in Jest, Node SSR, and anywhere else
+ * unloadable — `require('@coldboy/ds-ui')` failed in Jest, Node SSR, and anywhere else
  * using CommonJS. Dropping the dependency fixes that and removes ~70 KB.
  *
  * Behaviour is kept faithful to lodash where it mattered:

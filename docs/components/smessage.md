@@ -7,13 +7,13 @@
 `useMessage` 不需要挂载任何组件，调用即用。
 
 <script setup>
-import { useMessage } from 'ds-ui';
+import { useMessage } from '@coldboy/ds-ui';
 
 const message = useMessage();
 </script>
 
 ```js
-import { useMessage } from 'ds-ui';
+import { useMessage } from '@coldboy/ds-ui';
 
 const message = useMessage();
 
@@ -82,7 +82,7 @@ async function save() {
 
 ```vue
 <script setup>
-  import { useMessage } from 'ds-ui';
+  import { useMessage } from '@coldboy/ds-ui';
 
   const message = useMessage();
 

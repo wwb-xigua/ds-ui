@@ -7,7 +7,7 @@
 `SModal` 需要一个实例挂载在模板里（通常放在页面根部），通过 `useModal` 在任意位置触发。
 
 <script setup>
-import { useModal } from 'ds-ui';
+import { useModal } from '@coldboy/ds-ui';
 
 const [register, modal] = useModal();
 
@@ -46,7 +46,7 @@ function showAsync() {
 </template>
 
 <script setup>
-  import { useModal } from 'ds-ui';
+  import { useModal } from '@coldboy/ds-ui';
 
   const [register, modal] = useModal();
 

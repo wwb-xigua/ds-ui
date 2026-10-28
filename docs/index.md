@@ -40,7 +40,7 @@ features:
 
 ```vue
 <script setup>
-  import { useSTable } from 'ds-ui';
+  import { useSTable } from '@coldboy/ds-ui';
 
   const [register] = useSTable({
     api: async (params) => {

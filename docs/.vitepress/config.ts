@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const fromDocs = (relative: string) => fileURLToPath(new URL(relative, import.meta.url));
 
 export default defineConfig({
-  title: 'ds-ui',
+  title: '@coldboy/ds-ui',
   description: '一个基于 Naive UI 的 Vue 3 组件库，面向中后台数据密集型界面',
   lang: 'zh-CN',
   cleanUrls: true,
@@ -46,7 +46,7 @@ export default defineConfig({
 
   themeConfig: {
     logo: '/logo.svg',
-    siteTitle: 'ds-ui',
+    siteTitle: '@coldboy/ds-ui',
 
     nav: [
       { text: '开始', link: '/guide/getting-started' },

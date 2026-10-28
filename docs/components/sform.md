@@ -5,7 +5,7 @@ schema 驱动的表单。用一份字段描述生成响应式栅格表单，自�
 ## 基础用法
 
 <script setup>
-import { useForm } from 'ds-ui';
+import { useForm } from '@coldboy/ds-ui';
 
 const statusOptions = [
   { label: '启用', value: 1 },
@@ -71,7 +71,7 @@ const submitted = (values) => {
 
 ```vue
 <script setup>
-  import { useForm } from 'ds-ui';
+  import { useForm } from '@coldboy/ds-ui';
 
   const [register, methods] = useForm({
     schemas: [

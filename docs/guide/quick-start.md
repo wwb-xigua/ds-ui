@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-  import { useSTable } from 'ds-ui';
+  import { useSTable } from '@coldboy/ds-ui';
 
   const [register, methods] = useSTable({
     // 唯一的必填项之一：请求函数
@@ -76,7 +76,7 @@ useSTable({
 </template>
 
 <script setup lang="ts">
-  import { useForm } from 'ds-ui';
+  import { useForm } from '@coldboy/ds-ui';
 
   const [register, methods] = useForm({
     schemas: [
@@ -121,7 +121,7 @@ useSTable({
 这三个是命令式的，适合在任何地方触发：
 
 ```js
-import { useModal, useDrawer, useMessage } from 'ds-ui';
+import { useModal, useDrawer, useMessage } from '@coldboy/ds-ui';
 
 const modal = useModal();
 const drawer = useDrawer();

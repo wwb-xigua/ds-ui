@@ -13,7 +13,7 @@
 ::: code-group
 
 ```bash [npm]
-npm install ds-ui naive-ui
+npm install @coldboy/ds-ui naive-ui
 ```
 
 ```bash [pnpm]
@@ -45,7 +45,7 @@ import 'ds-ui/style.css';
 
 ```vue
 <script setup>
-  import { STable } from 'ds-ui';
+  import { STable } from '@coldboy/ds-ui';
 </script>
 
 <template>

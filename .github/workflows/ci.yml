@@ -97,13 +97,15 @@ jobs:
           set -euo pipefail
           mkdir -p /tmp/consumer && cd /tmp/consumer
           npm init -y > /dev/null
-          npm install "$GITHUB_WORKSPACE"/ds-ui-*.tgz vue naive-ui
+          # A scoped package name produces a `coldboy-ds-ui-<version>.tgz`
+          # tarball, so match on the extension rather than the package name.
+          npm install "$GITHUB_WORKSPACE"/*.tgz vue naive-ui
 
       - name: Load via ESM
         working-directory: /tmp/consumer
         run: |
           cat > esm-test.mjs <<'EOF'
-          import * as DsUI from 'ds-ui';
+          import * as DsUI from '@coldboy/ds-ui';
           const components = ['STable','SForm','SModal','SDrawer','SMessage','SCard','SContainer','SIcon'];
           const missing = components.filter((n) => !DsUI[n]);
           if (missing.length) throw new Error('missing components: ' + missing.join(', '));
@@ -115,7 +117,7 @@ jobs:
         working-directory: /tmp/consumer
         run: |
           cat > cjs-test.cjs <<'EOF'
-          const DsUI = require('ds-ui');
+          const DsUI = require('@coldboy/ds-ui');
           for (const name of ['STable', 'SForm', 'SMessage']) {
             if (!DsUI[name]) throw new Error('missing component: ' + name);
           }

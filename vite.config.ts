@@ -50,6 +50,10 @@ export default defineConfig({
       entry: resolve(__dirname, 'packages/index.ts'),
       formats: ['es', 'cjs'],
       name: 'DsUI',
+      // Pinned so the published file names stay stable regardless of the
+      // package name. Without this, switching to a scoped package would
+      // rename the entry files and break the `main` / `module` fields.
+      fileName: (format) => (format === 'es' ? 'ds-ui.js' : 'ds-ui.cjs'),
     },
   },
   resolve: {

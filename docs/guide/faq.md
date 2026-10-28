@@ -66,7 +66,7 @@ useSTable({ api, columns });
 
 ## 在 Jest / SSR 里报错 `ERR_REQUIRE_ESM`
 
-`ds-ui` 同时提供 ESM 和 CommonJS 两份产物。`require('ds-ui')` 走 `dist/ds-ui.cjs`。
+`ds-ui` 同时提供 ESM 和 CommonJS 两份产物。`require('@coldboy/ds-ui')` 走 `dist/ds-ui.cjs`。
 
 如果你遇到了这个错误，通常是项目里的某个 ESM-only 依赖被带进了 CJS 产物。仓库里有 `npm run verify:build` 会扫描 CJS 产物里的每个 `require()` 并校验它们可解析，CI 会拦住这类回归。
 

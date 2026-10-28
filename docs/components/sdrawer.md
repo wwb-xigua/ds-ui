@@ -5,7 +5,7 @@
 ## 基础用法
 
 <script setup>
-import { useDrawer } from 'ds-ui';
+import { useDrawer } from '@coldboy/ds-ui';
 
 const [register, drawer] = useDrawer();
 
@@ -36,7 +36,7 @@ function openTop() {
 </template>
 
 <script setup>
-  import { useDrawer } from 'ds-ui';
+  import { useDrawer } from '@coldboy/ds-ui';
 
   const [register, drawer] = useDrawer();
 

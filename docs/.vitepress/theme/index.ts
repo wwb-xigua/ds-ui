@@ -1,7 +1,7 @@
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
 import * as naive from 'naive-ui';
-import { SCard, SContainer, SDrawer, SForm, SIcon, SMessage, SModal, STable } from 'ds-ui';
+import { SCard, SContainer, SDrawer, SForm, SIcon, SMessage, SModal, STable } from '@coldboy/ds-ui';
 import './custom.css';
 
 export default {
