@@ -20,12 +20,13 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const argv = process.argv.slice(2);
 const bump = argv.find((a) => !a.startsWith('--'));
 const dryRun = argv.includes('--dry-run');
+const noBump = argv.includes('--no-bump');
 const tagIndex = argv.indexOf('--tag');
 const distTag = tagIndex > -1 ? argv[tagIndex + 1] : 'latest';
 
 if (!['patch', 'minor', 'major'].includes(bump)) {
   console.error(
-    'Usage: node scripts/release.mjs <patch|minor|major> [--tag <dist-tag>] [--dry-run]',
+    'Usage: node scripts/release.mjs <patch|minor|major> [--tag <dist-tag>] [--dry-run] [--no-bump]',
   );
   process.exit(1);
 }
@@ -118,12 +119,28 @@ if (dryRun) {
 
 /* ---------- 5. bump ---------- */
 
-const nextVersion = sh(`npm version ${bump} --no-git-tag-version --allow-same-version`)
-  .split('\n')
-  .pop()
-  .trim();
+/**
+ * `--no-bump` publishes whatever version package.json already carries.
+ *
+ * Two cases need it:
+ *  - the very first release, where the version was set by hand and bumping it
+ *    would mean shipping 0.1.1 as the package's first version
+ *  - retrying a publish that failed *after* the bump, where bumping again would
+ *    leave a gap in the version history
+ */
+let nextVersion;
 
-console.log(`\n... bumped to ${nextVersion}`);
+if (noBump) {
+  nextVersion = JSON.parse(readFileSync(pkgPath, 'utf-8')).version;
+  console.log(`\n... publishing version ${nextVersion} as-is (--no-bump)`);
+} else {
+  nextVersion = sh(`npm version ${bump} --no-git-tag-version --allow-same-version`)
+    .split('\n')
+    .pop()
+    .trim();
+
+  console.log(`\n... bumped to ${nextVersion}`);
+}
 
 /* ---------- 6. publish under the requested dist-tag ---------- */
 

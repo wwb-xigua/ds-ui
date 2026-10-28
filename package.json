@@ -1,6 +1,6 @@
 {
   "name": "ds-ui",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "A Vue 3 component library built on Naive UI — schema-driven forms, filterable tables, and modal/drawer primitives.",
   "type": "module",
   "license": "MIT",
