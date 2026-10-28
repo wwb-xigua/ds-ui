@@ -48,7 +48,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: dist
           retention-days: 7
 
   smoke:
@@ -63,9 +63,23 @@ jobs:
           node-version: 20
           cache: npm
 
+      # `needs: build` only orders the jobs — it does NOT share a workspace
+      # between them. This job gets a fresh checkout with no dist/, so the
+      # artifact from the build job has to be pulled down explicitly. Without
+      # it, `npm pack` produces a tarball with no dist/ and the import fails.
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+
       - name: Pack
         run: |
-          npm ci
+          set -euo pipefail
+          if [ ! -f dist/ds-ui.js ]; then
+            echo "dist/ds-ui.js is missing — the build artifact was not restored" >&2
+            exit 1
+          fi
+          npm ci --prefer-offline
           npm pack
 
       # Install the tarball the way a consumer would, then load it through both
@@ -74,6 +88,7 @@ jobs:
       # unloadable.
       - name: Install packed tarball
         run: |
+          set -euo pipefail
           mkdir -p /tmp/consumer && cd /tmp/consumer
           npm init -y > /dev/null
           npm install "$GITHUB_WORKSPACE"/ds-ui-*.tgz vue naive-ui
